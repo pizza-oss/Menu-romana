@@ -71,9 +71,9 @@
     }
 
     .section-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin: 18px 0 12px;
+      font-size: 19px;
+      font-weight: 800;
+      margin: 22px 0 12px;
       color: var(--gold);
     }
 
@@ -85,14 +85,6 @@
       margin-bottom: 14px;
     }
 
-    .pizza-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
     .pizza-name {
       font-size: 18px;
       font-weight: 700;
@@ -102,13 +94,14 @@
       color: var(--muted);
       font-size: 13px;
       margin-top: 3px;
+      margin-bottom: 12px;
     }
 
     .sizes {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .size-btn {
@@ -135,13 +128,34 @@
       font-weight: 700;
     }
 
+    .crust-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .crust-toggle input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
     .add-btn {
       width: 100%;
       background: var(--accent);
       color: #fff;
       border: none;
       border-radius: 12px;
-      padding: 11px 14px;
+      padding: 12px 14px;
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
@@ -151,12 +165,13 @@
       background: var(--accent-hover);
     }
 
-    .form-box {
+    .form-box,
+    .cart-box {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 16px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
     label {
@@ -184,14 +199,6 @@
       font-size: 14px;
     }
 
-    .cart-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      margin-top: 12px;
-    }
-
     .cart-item {
       display: flex;
       justify-content: space-between;
@@ -211,7 +218,7 @@
       color: #ff8a7a;
       border: 1px solid rgba(224, 60, 40, 0.35);
       border-radius: 8px;
-      padding: 4px 9px;
+      padding: 5px 10px;
       font-size: 12px;
       cursor: pointer;
     }
@@ -252,14 +259,17 @@
 </head>
 <body>
   <header>
-    <div class="badge">HORNO CALIENTE • PEDIDOS POR WHATSAPP</div>
+    <div class="badge">SERVICIO A DOMICILIO • WHATSAPP 9624037244</div>
     <h1>Pizzería La Romana</h1>
-    <p class="subtitle">Elige tus pizzas, selecciona el tamaño y envía tu pedido directo</p>
+    <p class="subtitle">Elige tu pizza, tamaño y orilla de queso (+$50) para pedir directo</p>
   </header>
 
   <main class="container">
-    <h2 class="section-title">Nuestras Pizzas</h2>
+    <h2 class="section-title">Menú</h2>
     <div id="menu-list"></div>
+
+    <h2 class="section-title">Especiales</h2>
+    <div id="specials-list"></div>
 
     <h2 class="section-title">Datos de Entrega</h2>
     <div class="form-box">
@@ -272,13 +282,13 @@
         <option value="Sadasi">Sadasi</option>
         <option value="Fuentes Ara">Fuentes Ara</option>
         <option value="Xanthe">Xanthe</option>
-        <option value="Ciudad Natura">Ciudad Natura</option>
+        <option value="Ciudad Natura 1 y 2">Ciudad Natura 1 y 2</option>
         <option value="Acordia">Acordia</option>
         <option value="El Pedregal">El Pedregal</option>
       </select>
 
       <label for="address-input">Calle, número y referencias</label>
-      <input type="text" id="address-input" placeholder="Ej. Av. Principal #45, casa portón negro" />
+      <input type="text" id="address-input" placeholder="Ej. Calle Principal #12, casa con reja" />
 
       <label for="notes-input">Notas adicionales (opcional)</label>
       <textarea id="notes-input" rows="2" placeholder="Ej. Sin picante, extra orégano..."></textarea>
@@ -293,65 +303,122 @@
         <span>Total estimado:</span>
         <span id="cart-total">$0</span>
       </div>
-      <button class="wa-btn" onclick="sendWhatsAppOrder()">Enviar pedido por WhatsApp</button>
+      <button type="button" class="wa-btn" onclick="sendWhatsAppOrder()">Enviar pedido por WhatsApp</button>
     </div>
   </main>
 
   <script>
     const WHATSAPP_NUMBER = "529624037244";
+    const CHEESE_CRUST_EXTRA = 50;
 
-    // Puedes ajustar nombres, descripciones y precios aquí fácilmente
-    const PIZZAS = [
-      {
-        id: "pepperoni",
-        name: "Pepperoni Clásica",
-        desc: "Salsa de tomate de la casa, queso mozzarella y abundante pepperoni.",
-        prices: { Chica: 130, Mediana: 185, Grande: 240 }
-      },
+    const BASE_PRICES = {
+      Chica: 85,
+      Mediana: 135,
+      Grande: 165,
+      Familiar: 195,
+      Jumbo: 240
+    };
+
+    const MENU_PIZZAS = [
       {
         id: "hawaiana",
         name: "Hawaiana",
-        desc: "Jamón horneado, piña dulce y queso mozzarella fundido.",
-        prices: { Chica: 135, Mediana: 190, Grande: 245 }
+        desc: "Queso mozzarella, jamón, tocineta, piña."
       },
       {
-        id: "mexicana",
-        name: "Mexicana",
-        desc: "Chorizo, jalapeño, cebolla, pimiento y queso mozzarella.",
-        prices: { Chica: 145, Mediana: 205, Grande: 265 }
+        id: "pepperoni-salami",
+        name: "Pepperoni, Salami",
+        desc: "Queso mozzarella, pepperoni o salami."
       },
       {
         id: "carnes-frias",
         name: "Carnes Frías",
-        desc: "Pepperoni, jamón, salami, chorizo y queso mozzarella.",
-        prices: { Chica: 155, Mediana: 220, Grande: 285 }
+        desc: "Queso mozzarella, chorizo, salchicha, jamón y tocino."
       },
       {
-        id: "cuatro-quesos",
-        name: "Especial La Romana",
-        desc: "Combinación de carnes, champiñones, pimiento y aceitunas.",
-        prices: { Chica: 160, Mediana: 225, Grande: 290 }
+        id: "champeroni",
+        name: "Champeroni",
+        desc: "Queso mozzarella, pepperoni y champiñones."
+      },
+      {
+        id: "ranchera",
+        name: "Ranchera",
+        desc: "Queso mozzarella, chorizo, frijol, rajas."
+      },
+      {
+        id: "vegetariana",
+        name: "Vegetariana",
+        desc: "Queso mozzarella, cebolla, champiñones, pimentón, pollo, elote, tocino."
+      },
+      {
+        id: "jamon-champinon",
+        name: "Jamón, Champiñón",
+        desc: "Queso mozzarella, jamón y champiñones."
       }
     ];
 
+    const SPECIAL_PIZZAS = [
+      {
+        id: "atun",
+        name: "Atún",
+        desc: "Queso mozzarella, atún, queso crema, parmesano."
+      },
+      {
+        id: "quesos",
+        name: "Quesos",
+        desc: "Queso mozzarella, queso parmesano y queso crema."
+      },
+      {
+        id: "mexicana",
+        name: "Mexicana",
+        desc: "Jamón, queso mozzarella, chorizo, rajas, cebolla y aguacate."
+      },
+      {
+        id: "pastor",
+        name: "Pastor",
+        desc: "Queso mozzarella, carne al pastor, piña."
+      },
+      {
+        id: "carbonara",
+        name: "Carbonara",
+        desc: "Tocino, parmesano, cebolla y queso mozzarella."
+      },
+      {
+        id: "arrachera",
+        name: "Arrachera",
+        desc: "Queso mozzarella, carne de arrachera, tocino, chistorra."
+      }
+    ];
+
+    const ALL_PIZZAS = [...MENU_PIZZAS, ...SPECIAL_PIZZAS];
     const selectedSizes = {};
+    const selectedCheeseCrust = {};
     const cart = [];
 
-    function renderMenu() {
-      const container = document.getElementById("menu-list");
+    function getItemPrice(size, withCheeseCrust) {
+      return BASE_PRICES[size] + (withCheeseCrust ? CHEESE_CRUST_EXTRA : 0);
+    }
+
+    function renderSection(items, containerId) {
+      const container = document.getElementById(containerId);
       container.innerHTML = "";
 
-      PIZZAS.forEach((pizza) => {
+      items.forEach((pizza) => {
         if (!selectedSizes[pizza.id]) {
           selectedSizes[pizza.id] = "Mediana";
         }
+        if (!selectedCheeseCrust[pizza.id]) {
+          selectedCheeseCrust[pizza.id] = false;
+        }
+
         const currentSize = selectedSizes[pizza.id];
-        const currentPrice = pizza.prices[currentSize];
+        const withCheeseCrust = selectedCheeseCrust[pizza.id];
+        const finalPrice = getItemPrice(currentSize, withCheeseCrust);
 
         const card = document.createElement("div");
         card.className = "pizza-card";
 
-        const sizesHtml = Object.entries(pizza.prices)
+        const sizesHtml = Object.entries(BASE_PRICES)
           .map(
             ([size, price]) => `
             <button
@@ -367,15 +434,19 @@
           .join("");
 
         card.innerHTML = `
-          <div class="pizza-top">
-            <div>
-              <div class="pizza-name">${pizza.name}</div>
-              <div class="pizza-desc">${pizza.desc}</div>
-            </div>
-          </div>
+          <div class="pizza-name">${pizza.name}</div>
+          <div class="pizza-desc">${pizza.desc}</div>
           <div class="sizes">${sizesHtml}</div>
+          <label class="crust-toggle">
+            <input
+              type="checkbox"
+              ${withCheeseCrust ? "checked" : ""}
+              onchange="toggleCheeseCrust('${pizza.id}', this.checked)"
+            />
+            <span>Orilla de queso (+$${CHEESE_CRUST_EXTRA})</span>
+          </label>
           <button type="button" class="add-btn" onclick="addToCart('${pizza.id}')">
-            Agregar ${currentSize} — $${currentPrice}
+            Agregar ${currentSize}${withCheeseCrust ? " + Orilla de queso" : ""} — $${finalPrice}
           </button>
         `;
 
@@ -383,17 +454,34 @@
       });
     }
 
+    function renderAllMenus() {
+      renderSection(MENU_PIZZAS, "menu-list");
+      renderSection(SPECIAL_PIZZAS, "specials-list");
+    }
+
     function selectSize(pizzaId, size) {
       selectedSizes[pizzaId] = size;
-      renderMenu();
+      renderAllMenus();
+    }
+
+    function toggleCheeseCrust(pizzaId, checked) {
+      selectedCheeseCrust[pizzaId] = checked;
+      renderAllMenus();
     }
 
     function addToCart(pizzaId) {
-      const pizza = PIZZAS.find((p) => p.id === pizzaId);
+      const pizza = ALL_PIZZAS.find((p) => p.id === pizzaId);
       const size = selectedSizes[pizzaId] || "Mediana";
-      const price = pizza.prices[size];
+      const withCheeseCrust = Boolean(selectedCheeseCrust[pizzaId]);
+      const price = getItemPrice(size, withCheeseCrust);
 
-      const existing = cart.find((item) => item.id === pizzaId && item.size === size);
+      const existing = cart.find(
+        (item) =>
+          item.id === pizzaId &&
+          item.size === size &&
+          item.withCheeseCrust === withCheeseCrust
+      );
+
       if (existing) {
         existing.qty += 1;
       } else {
@@ -401,10 +489,12 @@
           id: pizza.id,
           name: pizza.name,
           size,
+          withCheeseCrust,
           price,
           qty: 1
         });
       }
+
       renderCart();
     }
 
@@ -428,10 +518,11 @@
         .map((item, idx) => {
           const subtotal = item.price * item.qty;
           total += subtotal;
+          const crustLabel = item.withCheeseCrust ? " + Orilla de queso" : "";
           return `
             <div class="cart-item">
               <div>
-                <strong>${item.qty}x ${item.name}</strong> (${item.size})<br />
+                <strong>${item.qty}x ${item.name}</strong> (${item.size}${crustLabel})<br />
                 <span style="color: var(--muted); font-size: 13px;">$${subtotal}</span>
               </div>
               <button type="button" class="remove-btn" onclick="removeFromCart(${idx})">Quitar</button>
@@ -463,7 +554,8 @@
       const lines = cart.map((item) => {
         const subtotal = item.price * item.qty;
         total += subtotal;
-        return `• ${item.qty}x ${item.name} (${item.size}) - $${subtotal}`;
+        const crustLabel = item.withCheeseCrust ? " + Orilla de queso" : "";
+        return `• ${item.qty}x ${item.name} (${item.size}${crustLabel}) - $${subtotal}`;
       });
 
       let message = `🍕 *Nuevo Pedido — Pizzería La Romana*\n\n`;
@@ -478,7 +570,7 @@
       window.open(url, "_blank");
     }
 
-    renderMenu();
+    renderAllMenus();
     renderCart();
   </script>
 </body>
