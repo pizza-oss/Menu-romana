@@ -290,8 +290,16 @@
       <label for="address-input">Calle, número y referencias</label>
       <input type="text" id="address-input" placeholder="Ej. Calle Principal #12, casa con reja" />
 
+      <label for="payment-select">Método de pago</label>
+      <select id="payment-select">
+        <option value="">Selecciona cómo deseas pagar...</option>
+        <option value="Efectivo">Efectivo</option>
+        <option value="Transferencia">Transferencia</option>
+        <option value="Tarjeta">Tarjeta</option>
+      </select>
+
       <label for="notes-input">Notas adicionales (opcional)</label>
-      <textarea id="notes-input" rows="2" placeholder="Ej. Sin picante, extra orégano..."></textarea>
+      <textarea id="notes-input" rows="2" placeholder="Ej. Pago con billete de $500, sin picante..."></textarea>
     </div>
 
     <h2 class="section-title">Tu Pedido</h2>
@@ -543,10 +551,16 @@
       const name = document.getElementById("customer-name").value.trim();
       const zone = document.getElementById("zone-select").value;
       const address = document.getElementById("address-input").value.trim();
+      const payment = document.getElementById("payment-select").value;
       const notes = document.getElementById("notes-input").value.trim();
 
       if (!zone) {
         alert("Por favor selecciona tu zona de entrega.");
+        return;
+      }
+
+      if (!payment) {
+        alert("Por favor selecciona tu método de pago.");
         return;
       }
 
@@ -561,6 +575,7 @@
       let message = `🍕 *Nuevo Pedido — Pizzería La Romana*\n\n`;
       message += `*Detalle:*\n${lines.join("\n")}\n\n`;
       message += `*Total estimado:* $${total}\n`;
+      message += `*Método de pago:* ${payment}\n`;
       if (name) message += `*Cliente:* ${name}\n`;
       message += `*Zona:* ${zone}\n`;
       if (address) message += `*Dirección:* ${address}\n`;
