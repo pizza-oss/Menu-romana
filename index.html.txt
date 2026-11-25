@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pizzería La Romana - Menú Digital</title>
+  <style>
+    :root {
+      --primary: #c0392b;
+      --primary-dark: #962d22;
+      --whatsapp: #25d366;
+      --whatsapp-dark: #1ebe57;
+      --bg: #faf8f5;
+      --card: #ffffff;
+      --text: #1f1f1f;
+      --muted: #666666;
+      --border: #e6e2dc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 100px;
+    }
+
+    header {
+      background: #181818;
+      color: #fff;
+      text-align: center;
+      padding: 28px 16px 24px;
+      border-bottom: 4px solid var(--primary);
+    }
+
+    header h1 {
+      font-size: 1.7rem;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+    }
+
+    header p {
+      color: #d4d4d4;
+      font-size: 0.9rem;
+      margin-top: 6px;
+    }
+
+    .badge-delivery {
+      display: inline-block;
+      margin-top: 12px;
+      background: rgba(37, 211, 102, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(37, 211, 102, 0.4);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .sizes-bar {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .sizes-bar h2 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .sizes-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+
+    .size-pill {
+      background: #f5f2ed;
+      border-radius: 8px;
+      padding: 8px 4px;
+    }
+
+    .size-pill span {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .size-pill strong {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-top: 2px;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 22px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--primary);
+      display: inline-block;
+    }
+
+    .menu-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .pizza-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .pizza-info h3 {
+      font-size: 1.02rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .pizza-info p {
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .btn-select {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .btn-select:hover {
+      background: var(--primary-dark);
+    }
+
+    .zones-box {
+      margin-top: 26px;
+      background: #181818;
+      color: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .zones-box h3 {
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      color: #f3f3f3;
+      margin-bottom: 8px;
+    }
+
+    .zones-list {
+      font-size: 0.85rem;
+      color: #cccccc;
+      line-height: 1.6;
+    }
+
+    /* Barra flotante de carrito */
+    .cart-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #181818;
+      color: #fff;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 -4px 14px rgba(0,0,0,0.2);
+      z-index: 90;
+    }
+
+    .cart-bar.hidden {
+      display: none;
+    }
+
+    .cart-summary {
+      font-size: 0.9rem;
+    }
+
+    .cart-summary strong {
+      display: block;
+      font-size: 1.05rem;
+      color: #4ade80;
+    }
+
+    .btn-open-cart {
+      background: var(--whatsapp);
+      color: #0b2e16;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+    }
+
+    /* Modal de selección y pedido */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      width: 100%;
+      max-width: 520px;
+      border-radius: 18px 18px 0 0;
+      padding: 20px;
+      max-height: 88vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .modal-close {
+      background: #eee;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .size-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .size-option.selected {
+      border-color: var(--primary);
+      background: #fff5f5;
+      font-weight: 600;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.92rem;
+    }
+
+    .btn-remove {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    .form-group {
+      margin-top: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .form-group select,
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    .btn-whatsapp-send {
+      width: 100%;
+      margin-top: 16px;
+      background: var(--whatsapp);
+      color: #062812;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-whatsapp-send:hover {
+      background: var(--whatsapp-dark);
+    }
+
+    @media (min-width: 600px) {
+      .modal-backdrop {
+        align-items: center;
+      }
+      .modal {
+        border-radius: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>PIZZERÍA LA ROMANA</h1>
+    <p>Menú Digital &amp; Pedidos en Línea</p>
+    <div class="badge-delivery">🛵 Contamos con servicio a domicilio</div>
+  </header>
+
+  <div class="container">
+    <!-- Tabla de precios por tamaño -->
+    <div class="sizes-bar">
+      <h2>Precios por tamaño</h2>
+      <div class="sizes-grid">
+        <div class="size-pill"><span>Chica</span><strong>$85</strong></div>
+        <div class="size-pill"><span>Mediana</span><strong>$135</strong></div>
+        <div class="size-pill"><span>Grande</span><strong>$165</strong></div>
+        <div class="size-pill"><span>Familiar</span><strong>$195</strong></div>
+        <div class="size-pill"><span>Jumbo</span><strong>$240</strong></div>
+      </div>
+    </div>
+
+    <!-- Sección Menú Clásico -->
+    <h2 class="section-title">Menú</h2>
+    <div class="menu-grid" id="classic-menu"></div>
+
+    <!-- Sección Especiales -->
+    <h2 class="section-title">Especiales</h2>
+    <div class="menu-grid" id="special-menu"></div>
+
+    <!-- Zonas de reparto -->
+    <div class="zones-box">
+      <h3>ZONAS DE SERVICIO A DOMICILIO</h3>
+      <div class="zones-list">
+        SADASI • FUENTES ARA • XANTHE • CIUDAD NATURA 1 Y 2 • ACORDIA • EL PEDREGAL
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra flotante de pedido -->
+  <div class="cart-bar hidden" id="cart-bar">
+    <div class="cart-summary">
+      <span id="cart-count">0 pizzas</span>
+      <strong id="cart-total">$0 MXN</strong>
+    </div>
+    <button class="btn-open-cart" onclick="openCheckout()">Ver pedido y enviar</button>
+  </div>
+
+  <!-- Modal para elegir tamaño -->
+  <div class="modal-backdrop" id="size-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-pizza-name">Elige el tamaño</h3>
+        <button class="modal-close" onclick="closeSizeModal()">×</button>
+      </div>
+      <p id="modal-pizza-desc" style="font-size:0.85rem;color:#666;margin-bottom:12px;"></p>
+      <div id="size-options"></div>
+      <button class="btn-select" style="width:100%;padding:12px;margin-top:8px;font-size:0.95rem;" onclick="confirmAddPizza()">Agregar al pedido</button>
+    </div>
+  </div>
+
+  <!-- Modal de resumen y envío a WhatsApp -->
+  <div class="modal-backdrop" id="checkout-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Tu Pedido</h3>
+        <button class="modal-close" onclick="closeCheckout()">×</button>
+      </div>
+      <div id="cart-items-list"></div>
+
+      <div class="form-group">
+        <label for="delivery-zone">Colonia / Fraccionamiento de entrega:</label>
+        <select id="delivery-zone">
+          <option value="SADASI">SADASI</option>
+          <option value="FUENTES ARA">FUENTES ARA</option>
+          <option value="XANTHE">XANTHE</option>
+          <option value="CIUDAD NATURA 1">CIUDAD NATURA 1</option>
+          <option value="CIUDAD NATURA 2">CIUDAD NATURA 2</option>
+          <option value="ACORDIA">ACORDIA</option>
+          <option value="EL PEDREGAL">EL PEDREGAL</option>
+          <option value="Recoger en sucursal">Paso a recoger en sucursal</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="customer-address">Calle, número y referencias (o tu nombre):</label>
+        <input type="text" id="customer-address" placeholder="Ej. Calle Roble #14, casa blanca - Juan" />
+      </div>
+
+      <button class="btn-whatsapp-send" onclick="sendWhatsApp()">
+        📲 Enviar pedido por WhatsApp
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const WHATSAPP_NUMBER = "529624037244";
+
+    const SIZES = [
+      { name: "Chica", price: 85 },
+      { name: "Mediana", price: 135 },
+      { name: "Grande", price: 165 },
+      { name: "Familiar", price: 195 },
+      { name: "Jumbo", price: 240 }
+    ];
+
+    const CLASSIC_PIZZAS = [
+      { name: "Hawaiana", desc: "Queso mozzarella, jamón, tocineta, piña" },
+      { name: "Pepperoni / Salami", desc: "Queso mozzarella, pepperoni o salami" },
+      { name: "Carnes Frías", desc: "Queso mozzarella, chorizo, salchicha, jamón y tocino" },
+      { name: "Champeroni", desc: "Queso mozzarella, pepperoni y champiñones" },
+      { name: "Ranchera", desc: "Queso mozzarella, chorizo, frijol, rajas" },
+      { name: "Vegetariana", desc: "Queso mozzarella, cebolla, champiñones, pimentón, pollo, elote, tocino" },
+      { name: "Jamón / Champiñón", desc: "Queso mozzarella, jamón y champiñones" }
+    ];
+
+    const SPECIAL_PIZZAS = [
+      { name: "Atún", desc: "Queso mozzarella, atún, queso crema, parmesano" },
+      { name: "Quesos", desc: "Queso mozzarella, queso parmesano y queso crema" },
+      { name: "Mexicana", desc: "Jamón, queso mozzarella, chorizo, rajas, cebolla y aguacate" },
+      { name: "Pastor", desc: "Queso mozzarella, carne al pastor, piña" },
+      { name: "Carbonara", desc: "Tocino, parmesano, cebolla y queso mozzarella" },
+      { name: "Arrachera", desc: "Queso mozzarella, carne de arrachera, tocino, chistorra" }
+    ];
+
+    let cart = [];
+    let currentPizza = null;
+    let selectedSizeIndex = 2; // Grande por defecto
+
+    function renderMenu(list, containerId) {
+      const container = document.getElementById(containerId);
+      list.forEach((pizza) => {
+        const card = document.createElement("div");
+        card.className = "pizza-card";
+        card.innerHTML = `
+          <div class="pizza-info">
+            <h3>${pizza.name}</h3>
+            <p>${pizza.desc}</p>
+          </div>
+          <button class="btn-select" onclick='openSizeModal(${JSON.stringify(pizza)})'>+ Pedir</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openSizeModal(pizza) {
+      currentPizza = pizza;
+      selectedSizeIndex = 2;
+      document.getElementById("modal-pizza-name").textContent = pizza.name;
+      document.getElementById("modal-pizza-desc").textContent = pizza.desc;
+      renderSizeOptions();
+      document.getElementById("size-modal").classList.add("active");
+    }
+
+    function closeSizeModal() {
+      document.getElementById("size-modal").classList.remove("active");
+    }
+
+    function renderSizeOptions() {
+      const container = document.getElementById("size-options");
+      container.innerHTML = "";
+      SIZES.forEach((size, index) => {
+        const div = document.createElement("div");
+        div.className = "size-option" + (index === selectedSizeIndex ? " selected" : "");
+        div.innerHTML = `<span>${size.name}</span><strong>$${size.price}</strong>`;
+        div.onclick = () => {
+          selectedSizeIndex = index;
+          renderSizeOptions();
+        };
+        container.appendChild(div);
+      });
+    }
+
+    function confirmAddPizza() {
+      const size = SIZES[selectedSizeIndex];
+      cart.push({
+        pizza: currentPizza.name,
+        size: size.name,
+        price: size.price
+      });
+      updateCartBar();
+      closeSizeModal();
+    }
+
+    function updateCartBar() {
+      const bar = document.getElementById("cart-bar");
+      if (cart.length === 0) {
+        bar.classList.add("hidden");
+        return;
+      }
+      bar.classList.remove("hidden");
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      document.getElementById("cart-count").textContent =
+        cart.length === 1 ? "1 pizza seleccionada" : `${cart.length} pizzas seleccionadas`;
+      document.getElementById("cart-total").textContent = `$${total} MXN`;
+    }
+
+    function openCheckout() {
+      const list = document.getElementById("cart-items-list");
+      list.innerHTML = "";
+      cart.forEach((item, idx) => {
+        const row = document.createElement("div");
+        row.className = "cart-item";
+        row.innerHTML = `
+          <div>
+            <strong>1x ${item.pizza}</strong> (${item.size})
+          </div>
+          <div>
+            $${item.price}
+            <button class="btn-remove" onclick="removeItem(${idx})">Quitar</button>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+      document.getElementById("checkout-modal").classList.add("active");
+    }
+
+    function closeCheckout() {
+      document.getElementById("checkout-modal").classList.remove("active");
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      updateCartBar();
+      if (cart.length === 0) {
+        closeCheckout();
+      } else {
+        openCheckout();
+      }
+    }
+
+    function sendWhatsApp() {
+      if (cart.length === 0) return;
+      const zone = document.getElementById("delivery-zone").value;
+      const address = document.getElementById("customer-address").value.trim();
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+      let message = "🍕 *Nuevo Pedido - Pizzería La Romana*\n\n";
+      cart.forEach((item, i) => {
+        message += `${i + 1}. *${item.pizza}* (${item.size}) - $${item.price}\n`;
+      });
+      message += `\n💰 *Total:* $${total} MXN`;
+      message += `\n📍 *Zona:* ${zone}`;
+      if (address) {
+        message += `\n🏠 *Dirección / Nombre:* ${address}`;
+      }
+
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank");
+    }
+
+    renderMenu(CLASSIC_PIZZAS, "classic-menu");
+    renderMenu(SPECIAL_PIZZAS, "special-menu");
+  </script>
+</body>
+</html>
