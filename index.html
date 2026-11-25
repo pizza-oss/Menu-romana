@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pizzería La Romana — Menú Digital</title>
+  <style>
+    :root {
+      --bg: #120d0a;
+      --card: #1e1611;
+      --card-2: #281d16;
+      --text: #fff7ed;
+      --muted: #cbb8a6;
+      --accent: #e03c28;
+      --accent-hover: #c52f1d;
+      --gold: #f5b942;
+      --whatsapp: #25d366;
+      --border: rgba(255, 247, 237, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 110px;
+      line-height: 1.45;
+    }
+
+    header {
+      background: linear-gradient(180deg, #2b150e 0%, var(--bg) 100%);
+      padding: 28px 18px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(245, 185, 66, 0.16);
+      color: var(--gold);
+      border: 1px solid rgba(245, 185, 66, 0.35);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 18px 16px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 18px 0 12px;
+      color: var(--gold);
+    }
+
+    .pizza-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .pizza-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .pizza-name {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .pizza-desc {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .sizes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .size-btn {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 6px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 12px;
+      transition: 0.15s ease;
+    }
+
+    .size-btn strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .size-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .add-btn {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .add-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .form-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 12px;
+      margin-bottom: 5px;
+      color: var(--muted);
+    }
+
+    label:first-child {
+      margin-top: 0;
+    }
+
+    select,
+    input,
+    textarea {
+      width: 100%;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 11px 12px;
+      font-size: 14px;
+    }
+
+    .cart-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .cart-item:last-of-type {
+      border-bottom: none;
+    }
+
+    .remove-btn {
+      background: rgba(224, 60, 40, 0.18);
+      color: #ff8a7a;
+      border: 1px solid rgba(224, 60, 40, 0.35);
+      border-radius: 8px;
+      padding: 4px 9px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      font-weight: 800;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      color: var(--gold);
+    }
+
+    .wa-btn {
+      display: block;
+      width: 100%;
+      margin-top: 14px;
+      background: var(--whatsapp);
+      color: #091e12;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .empty-msg {
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+      padding: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="badge">HORNO CALIENTE • PEDIDOS POR WHATSAPP</div>
+    <h1>Pizzería La Romana</h1>
+    <p class="subtitle">Elige tus pizzas, selecciona el tamaño y envía tu pedido directo</p>
+  </header>
+
+  <main class="container">
+    <h2 class="section-title">Nuestras Pizzas</h2>
+    <div id="menu-list"></div>
+
+    <h2 class="section-title">Datos de Entrega</h2>
+    <div class="form-box">
+      <label for="customer-name">Tu nombre</label>
+      <input type="text" id="customer-name" placeholder="Ej. Carlos Pérez" />
+
+      <label for="zone-select">Zona o fraccionamiento</label>
+      <select id="zone-select">
+        <option value="">Selecciona tu zona...</option>
+        <option value="Sadasi">Sadasi</option>
+        <option value="Fuentes Ara">Fuentes Ara</option>
+        <option value="Xanthe">Xanthe</option>
+        <option value="Ciudad Natura">Ciudad Natura</option>
+        <option value="Acordia">Acordia</option>
+        <option value="El Pedregal">El Pedregal</option>
+      </select>
+
+      <label for="address-input">Calle, número y referencias</label>
+      <input type="text" id="address-input" placeholder="Ej. Av. Principal #45, casa portón negro" />
+
+      <label for="notes-input">Notas adicionales (opcional)</label>
+      <textarea id="notes-input" rows="2" placeholder="Ej. Sin picante, extra orégano..."></textarea>
+    </div>
+
+    <h2 class="section-title">Tu Pedido</h2>
+    <div class="cart-box">
+      <div id="cart-items">
+        <p class="empty-msg">Aún no has agregado pizzas a tu pedido.</p>
+      </div>
+      <div class="total-row">
+        <span>Total estimado:</span>
+        <span id="cart-total">$0</span>
+      </div>
+      <button class="wa-btn" onclick="sendWhatsAppOrder()">Enviar pedido por WhatsApp</button>
+    </div>
+  </main>
+
+  <script>
+    const WHATSAPP_NUMBER = "529624037244";
+
+    // Puedes ajustar nombres, descripciones y precios aquí fácilmente
+    const PIZZAS = [
+      {
+        id: "pepperoni",
+        name: "Pepperoni Clásica",
+        desc: "Salsa de tomate de la casa, queso mozzarella y abundante pepperoni.",
+        prices: { Chica: 130, Mediana: 185, Grande: 240 }
+      },
+      {
+        id: "hawaiana",
+        name: "Hawaiana",
+        desc: "Jamón horneado, piña dulce y queso mozzarella fundido.",
+        prices: { Chica: 135, Mediana: 190, Grande: 245 }
+      },
+      {
+        id: "mexicana",
+        name: "Mexicana",
+        desc: "Chorizo, jalapeño, cebolla, pimiento y queso mozzarella.",
+        prices: { Chica: 145, Mediana: 205, Grande: 265 }
+      },
+      {
+        id: "carnes-frias",
+        name: "Carnes Frías",
+        desc: "Pepperoni, jamón, salami, chorizo y queso mozzarella.",
+        prices: { Chica: 155, Mediana: 220, Grande: 285 }
+      },
+      {
+        id: "cuatro-quesos",
+        name: "Especial La Romana",
+        desc: "Combinación de carnes, champiñones, pimiento y aceitunas.",
+        prices: { Chica: 160, Mediana: 225, Grande: 290 }
+      }
+    ];
+
+    const selectedSizes = {};
+    const cart = [];
+
+    function renderMenu() {
+      const container = document.getElementById("menu-list");
+      container.innerHTML = "";
+
+      PIZZAS.forEach((pizza) => {
+        if (!selectedSizes[pizza.id]) {
+          selectedSizes[pizza.id] = "Mediana";
+        }
+        const currentSize = selectedSizes[pizza.id];
+        const currentPrice = pizza.prices[currentSize];
+
+        const card = document.createElement("div");
+        card.className = "pizza-card";
+
+        const sizesHtml = Object.entries(pizza.prices)
+          .map(
+            ([size, price]) => `
+            <button
+              type="button"
+              class="size-btn ${size === currentSize ? "active" : ""}"
+              onclick="selectSize('${pizza.id}', '${size}')"
+            >
+              <strong>${size}</strong>
+              $${price}
+            </button>
+          `
+          )
+          .join("");
+
+        card.innerHTML = `
+          <div class="pizza-top">
+            <div>
+              <div class="pizza-name">${pizza.name}</div>
+              <div class="pizza-desc">${pizza.desc}</div>
+            </div>
+          </div>
+          <div class="sizes">${sizesHtml}</div>
+          <button type="button" class="add-btn" onclick="addToCart('${pizza.id}')">
+            Agregar ${currentSize} — $${currentPrice}
+          </button>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function selectSize(pizzaId, size) {
+      selectedSizes[pizzaId] = size;
+      renderMenu();
+    }
+
+    function addToCart(pizzaId) {
+      const pizza = PIZZAS.find((p) => p.id === pizzaId);
+      const size = selectedSizes[pizzaId] || "Mediana";
+      const price = pizza.prices[size];
+
+      const existing = cart.find((item) => item.id === pizzaId && item.size === size);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          id: pizza.id,
+          name: pizza.name,
+          size,
+          price,
+          qty: 1
+        });
+      }
+      renderCart();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    function renderCart() {
+      const cartContainer = document.getElementById("cart-items");
+      const totalEl = document.getElementById("cart-total");
+
+      if (cart.length === 0) {
+        cartContainer.innerHTML = `<p class="empty-msg">Aún no has agregado pizzas a tu pedido.</p>`;
+        totalEl.textContent = "$0";
+        return;
+      }
+
+      let total = 0;
+      cartContainer.innerHTML = cart
+        .map((item, idx) => {
+          const subtotal = item.price * item.qty;
+          total += subtotal;
+          return `
+            <div class="cart-item">
+              <div>
+                <strong>${item.qty}x ${item.name}</strong> (${item.size})<br />
+                <span style="color: var(--muted); font-size: 13px;">$${subtotal}</span>
+              </div>
+              <button type="button" class="remove-btn" onclick="removeFromCart(${idx})">Quitar</button>
+            </div>
+          `;
+        })
+        .join("");
+
+      totalEl.textContent = `$${total}`;
+    }
+
+    function sendWhatsAppOrder() {
+      if (cart.length === 0) {
+        alert("Agrega al menos una pizza antes de enviar tu pedido.");
+        return;
+      }
+
+      const name = document.getElementById("customer-name").value.trim();
+      const zone = document.getElementById("zone-select").value;
+      const address = document.getElementById("address-input").value.trim();
+      const notes = document.getElementById("notes-input").value.trim();
+
+      if (!zone) {
+        alert("Por favor selecciona tu zona de entrega.");
+        return;
+      }
+
+      let total = 0;
+      const lines = cart.map((item) => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        return `• ${item.qty}x ${item.name} (${item.size}) - $${subtotal}`;
+      });
+
+      let message = `🍕 *Nuevo Pedido — Pizzería La Romana*\n\n`;
+      message += `*Detalle:*\n${lines.join("\n")}\n\n`;
+      message += `*Total estimado:* $${total}\n`;
+      if (name) message += `*Cliente:* ${name}\n`;
+      message += `*Zona:* ${zone}\n`;
+      if (address) message += `*Dirección:* ${address}\n`;
+      if (notes) message += `*Notas:* ${notes}\n`;
+
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank");
+    }
+
+    renderMenu();
+    renderCart();
+  </script>
+</body>
+</html>
